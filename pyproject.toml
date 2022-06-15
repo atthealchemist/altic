@@ -1,0 +1,25 @@
+[project]
+name = "altic"
+description = "Интерактивное создание RPM-пакетов, их сборка и загрузка в репозиторий."
+authors = [
+    {name = "Alexey Konev", email = "konevas@altlinux.org"},
+]
+dependencies = [
+    "typer>=0.4.1",
+    "copier>=6.0.0",
+    "GitPython>=3.1.27",
+    "alive-progress>=2.4.1",
+]
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dynamic = ["version"]
+
+[project.scripts]
+altic = "altic.main:app"
+
+[tool.pdm]
+version = {use_scm = true}
+
+[build-system]
+requires = ["pdm-pep517>=0.12.0"]
+build-backend = "pdm.pep517.api"

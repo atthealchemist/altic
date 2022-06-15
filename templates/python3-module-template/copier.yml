@@ -1,0 +1,16 @@
+---
+# Include metadata
+!include _conf/*.yml
+---
+
+# --- copier configuration ---
+_jinja_extensions:
+  - "jinja2_time.TimeExtension"
+  - "jinja2_strcase.StrcaseExtension"
+
+_templates_suffix: ""
+_exclude:
+  - ".git"
+  - "_conf"
+
+# --- template variables ---

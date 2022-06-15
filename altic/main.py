@@ -1,0 +1,1 @@
+from altic.commands import app

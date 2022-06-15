@@ -1,0 +1,62 @@
+
+package_name:
+  type: str
+  help: Package name
+
+package_slug:
+  type: str
+  help: Package slug
+  default: "{{ package_name|lower|replace(' ', '-') }}"
+
+branch:
+  type: str
+  help: Select repository branch
+  default: Sisyphus
+  choices:
+    - p10
+    - Sisyphus
+
+version:
+  type: str
+  help: Package version (by the way, it should be equal to version of sources)
+  default: 0.1.0
+
+release:
+  type: str
+  help: Package release
+  default: alt1
+
+summary:
+  type: str
+  help: Package summary
+  default: "{{ package_name }} summary"
+
+description:
+  type: str
+  help: Package description
+  default: ""
+
+license:
+  type: str
+  help: Choose license
+  default: MIT
+  choices:
+    - MIT
+    - GPLv2+
+    - GPLv3+
+    - Apache License 2.0
+
+url:
+  type: str
+  help: Package homepage (code or documentation)
+  default: "https://github.com/owner/new_package"
+
+packager:
+  type: str
+  help: Packager credentials
+  default: Your Name <nickname@altlinux.org>
+
+source:
+  type: str
+  help: Package sources tarball
+  default: "{{package_slug}}-{{version}}.tar"

@@ -1,0 +1,1 @@
+tar: {{package_slug}} name={{package_slug}}-@version@

@@ -1,0 +1,16 @@
+sandboxes:
+  default:
+    root: /home/thealchemist/repo/
+    hasher: /home/thealchemist/.hasher/
+    build:
+      nprocs: 2
+      arch: x86_64
+      mountpoints: 
+        - /proc
+        - /dev/pts
+        - /sys
+      gear: true
+
+infrastructure:
+  ssh_gitery_hostname: git.alt
+  ssh_gyle_hostname: gyle.alt
