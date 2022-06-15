@@ -32,3 +32,6 @@ infrastructure:  # настройки инфраструктуры
   ssh_gitery_hostname: git.alt  # ваш алиас гитери в .ssh/config
   ssh_gyle_hostname: gyle.alt  # ваш алиас гила в .ssh/config
 ```
+
+## Установка
+`pip install git+https://github.com/atthealchemist/altic.git`
