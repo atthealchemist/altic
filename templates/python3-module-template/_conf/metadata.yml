@@ -1,13 +1,3 @@
-
-package_name:
-  type: str
-  help: Package name
-
-package_slug:
-  type: str
-  help: Package slug
-  default: "{{ package_name|lower|replace(' ', '-') }}"
-
 branch:
   type: str
   help: Select repository branch
@@ -15,6 +5,19 @@ branch:
   choices:
     - p10
     - Sisyphus
+
+package_name:
+  type: str
+  help: Package name (without python3-module)
+
+package_slug:
+  type: str
+  help: |
+    The project slug will be used as alias of the package name.
+    Example: You enter "Does Not Exist" and the name will be 'python3-module-does-not-exist'.
+    Note: You don't have to prefix it with "python3-module-", it adds automatically!
+    
+  default: "{{ package_name|lower|replace(' ', '-') }}"
 
 version:
   type: str
@@ -29,22 +32,12 @@ release:
 summary:
   type: str
   help: Package summary
-  default: "{{ package_name }} summary"
+  default: ""
 
 description:
   type: str
   help: Package description
   default: ""
-
-license:
-  type: str
-  help: Choose license
-  default: MIT
-  choices:
-    - MIT
-    - GPLv2+
-    - GPLv3+
-    - Apache License 2.0
 
 url:
   type: str
@@ -53,7 +46,9 @@ url:
 
 packager:
   type: str
-  help: Packager credentials
+  help: |
+    Packager credentials (for changelog entry) in next format:
+      Andrew Ivanov <aivanov@altlinux.org>
   default: Your Name <nickname@altlinux.org>
 
 source:
