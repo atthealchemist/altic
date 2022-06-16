@@ -4,6 +4,7 @@ import tarfile
 import typer
 import yaml
 
+from git import Repo
 from getpass import getpass
 from pathlib import Path
 
@@ -28,7 +29,6 @@ def sudo_launch_in_shell(cmd, *args, **kwargs):
 
 def load_config():
     config_path = Path(__file__).parent.parent / "config.yml"
-    # log(f"Config path: {config_path.absolute()}", style="italic")
     with open(config_path, "r") as config_file:
         try:
             return yaml.safe_load(config_file)
@@ -40,12 +40,22 @@ def fetch_application_groups():
     group_file_path = RPM_LIB_DIR / "GROUPS"
     return group_file_path.read_text(encoding="utf8").split("\n")
 
+
+def fetch_application_licenses():
+    licenses_path = Path("/usr/share") / "license"
+    return {
+        directory.name
+        for directory in licenses_path.glob("**/*")
+    }
+
+
 def fetch_architectures():
     platform_path = RPM_LIB_DIR / "platform"
     return {
         directory.name.split('-')[0] 
         for directory in platform_path.glob("**/")
     }
+
 
 def launch_in_shell(cmd: str, *args, **params):    
     has_errors = False
@@ -91,6 +101,7 @@ def launch_in_shell(cmd: str, *args, **params):
             error("Timeout")
             process.kill()
 
+
 def get_sandbox_config(sandbox_name: str):
     app_config = load_config()
     sandbox_config = app_config.get("sandboxes").get(sandbox_name)
@@ -98,8 +109,8 @@ def get_sandbox_config(sandbox_name: str):
         error(f"Sandbox with name '{sandbox_name}' not found in config.yml!")
     return sandbox_config
 
+
 def launch_hasher(*args, command: str = "hsh", sandbox: str = "default", **kwargs):
-    app_config = load_config()
     cmd = [command]
     sandbox_config = get_sandbox_config(sandbox)
     if sandbox_config['build']['gear'] is True:
@@ -110,10 +121,12 @@ def launch_hasher(*args, command: str = "hsh", sandbox: str = "default", **kwarg
         **kwargs
     )
 
+
 def launch_gitery(*args, **kwargs):
     app_config = load_config()
     gitery_ssh_host = app_config['infrastructure']['ssh_gitery_hostname']
     return launch_in_shell("ssh", gitery_ssh_host, *args, **kwargs)
+
 
 def pack_sources_to_tarball(
     source_dir, 
@@ -132,8 +145,15 @@ def pack_sources_to_tarball(
 
 
 def search_package_in_repo(package_name):
-    res = launch_in_shell("epms", package_name)
+    res = launch_gitery("find-package", f"*{package_name}*")
     if not res:
-        warning(f"Package {package_name} does not exists in repo!")
+        warning(f"Package '{package_name}' does not exists in repo!")
         return False
     return True
+
+
+def get_packager_from_git():
+    reader = Repo.init().config_reader()
+    name = reader.get_value("user", "name")
+    email = reader.get_value("user", "email")
+    return f"{name} <{email}>"

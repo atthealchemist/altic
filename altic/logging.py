@@ -44,4 +44,4 @@ def print_logo():
     )
     color = random.choice(colors)
     log(text2art("\naltic", font="univers", chr_ignore=True), style=f"bold fg:{color}")
-    log("Package building without pain and boring legacy manuals\n\n", style=f"bold italic fg:{color}")
+    log("Packaging without pain and boring legacy manuals\n\n", style=f"bold italic fg:{color}")
