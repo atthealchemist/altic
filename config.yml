@@ -1,7 +1,7 @@
 sandboxes:
   default:
     root: /home/thealchemist/repo/
-    hasher: /home/thealchemist/.hasher/
+    hasher: /tmp/.private/thealchemist/
     build:
       nprocs: 2
       arch: x86_64

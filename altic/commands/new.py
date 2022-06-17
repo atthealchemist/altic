@@ -50,7 +50,8 @@ def make_package_template(template_dir, template_data, source, tag, groups):
     package_template = copier.run_auto(
         str(template_dir),
         data=template_default_data,
-        user_defaults=template_data
+        user_defaults=template_data,
+        overwrite=True
     )
     package_slug = package_template.answers.user.get("package_slug")
     return package_slug

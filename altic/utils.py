@@ -74,33 +74,28 @@ def launch_in_shell(cmd: str, *args, **params):
     else:
         log(f"Running command as user: {command}", prefix="♟")
     
-    with subprocess.Popen(
+    process_input = {}
+    if password:
+        process_input = {'stdin': subprocess.PIPE, 'input': password.encode()}
+        
+    process = subprocess.Popen(
         [cmd, *args, *kwargs],
-        stderr=subprocess.PIPE,
+        **process_input,
+        stderr=subprocess.STDOUT,
         stdout=subprocess.PIPE,
-        stdin=subprocess.PIPE,
-        universal_newlines=True
-    ) as process:
-        try:
-            if password:
-                process.stdin.write(password.encode())
-            for out, err in zip(process.stdout, process.stderr):
-                if out:
-                    info(out.capitalize(), prefix="")
-                if err:
-                    error(err.capitalize(), prefix="")
-                if any([
-                    e in out 
-                    or e in err 
-                    for e in ('error', 'warn')
-                ]):
-                    has_errors = True
-                # return out.decode("utf-8")
-            success("Completed!") if not has_errors else error("Failed!")
-        except subprocess.TimeoutExpired:
-            error("Timeout")
-            process.kill()
+        text=True
+    )
 
+    while True:
+        out = process.stdout.readline()
+        if not out: 
+            break
+        if "err" in out:
+            error(out.capitalize(), prefix="")
+        info(out.capitalize(), prefix="")
+
+    success("Completed!") if not has_errors else error("Failed!")
+    return not has_errors
 
 def get_sandbox_config(sandbox_name: str):
     app_config = load_config()
@@ -110,10 +105,10 @@ def get_sandbox_config(sandbox_name: str):
     return sandbox_config
 
 
-def launch_hasher(*args, command: str = "hsh", sandbox: str = "default", **kwargs):
+def launch_hasher(*args, command: str = "hsh", sandbox: str = "default", with_gear: bool = True, **kwargs):
     cmd = [command]
     sandbox_config = get_sandbox_config(sandbox)
-    if sandbox_config['build']['gear'] is True:
+    if sandbox_config['build']['gear'] is True and with_gear:
         cmd = ['gear', '--hasher', '--', *cmd]
     return launch_in_shell(
         *cmd,
